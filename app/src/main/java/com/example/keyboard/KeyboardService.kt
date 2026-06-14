@@ -230,9 +230,9 @@ class KeyboardService : InputMethodService() {
                 keysRow3 = listOf("SHIFT", "z", "x", "c", "v", "b", "n", "m", "BACK")
             }
             1 -> { // Arabic
-                keysRow1 = listOf("ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د")
+                keysRow1 = listOf("ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج")
                 keysRow2 = listOf("ش", "س", "ي", "ب", "ل", "ا", "ت", "ن", "م", "ك", "ط")
-                keysRow3 = listOf("SHIFT", "ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ", "BACK")
+                keysRow3 = listOf("SHIFT", "ذ", "ء", "ؤ", "ر", "ى", "ة", "و", "ز", "ظ", "د", "BACK")
             }
             else -> { // Symbols Page 1
                 keysRow1 = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
@@ -246,7 +246,7 @@ class KeyboardService : InputMethodService() {
             val numRow = createRowLayout()
             val numKeys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
             for (num in numKeys) {
-                numRow.addView(createKeyView(num, 44, 1.0f))
+                numRow.addView(createKeyView(num, 52, 1.0f))
             }
             keysContainer.addView(numRow)
         }
