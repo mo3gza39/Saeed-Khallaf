@@ -614,8 +614,9 @@ fun MainGlassKeyboard(
                             }
 
                             // Language preset toggler
+                            val langLabel = if (isArabic) "ENG" else "عربي"
                             PremiumGlassKey(
-                                label = "LANG",
+                                label = langLabel,
                                 icon = Icons.Default.Language,
                                 theme = theme,
                                 intensity = intensity,
@@ -640,8 +641,9 @@ fun MainGlassKeyboard(
                             )
 
                             // Space bar
+                            val spaceLabel = if (isArabic) "مسافة" else "Space"
                             PremiumGlassKey(
-                                label = "SPACE",
+                                label = spaceLabel,
                                 theme = theme,
                                 intensity = intensity,
                                 borderThickness = borderThickness,

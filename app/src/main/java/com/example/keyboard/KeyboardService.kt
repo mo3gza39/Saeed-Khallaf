@@ -33,6 +33,7 @@ class KeyboardService : InputMethodService() {
 
     private val handler = android.os.Handler(android.os.Looper.getMainLooper())
     private var repeatingDeleteRunnable: Runnable? = null
+    private var startDeleteRunnable: Runnable? = null
 
     private val dictionary = listOf(
         // English words
@@ -359,7 +360,7 @@ class KeyboardService : InputMethodService() {
                 mainLabelText = if (isShifted) "↑" else "⇧"
             }
             "BACK" -> mainLabelText = "⌫"
-            "SPACE" -> mainLabelText = if (currentLang == 1) "العربية" else "Space"
+            "SPACE" -> mainLabelText = if (currentLang == 1) "مسافة" else "Space"
             "LANG" -> mainLabelText = if (currentLang == 1) "ENG" else "عربي"
             "EMOJI_KEY" -> mainLabelText = "😊"
             "ABC" -> mainLabelText = "ABC"
@@ -446,14 +447,21 @@ class KeyboardService : InputMethodService() {
                     android.view.MotionEvent.ACTION_DOWN -> {
                         playHaptic(v)
                         handleBackKeyPress()
-                        // Schedule delayed repetition
-                        handler.postDelayed({
+                        // Schedule delayed repetition safely
+                        startDeleteRunnable?.let { handler.removeCallbacks(it) }
+                        val runnable = Runnable {
                             if (repeatingDeleteRunnable == null) {
                                 startRepeatingDelete()
                             }
-                        }, 400)
+                        }
+                        startDeleteRunnable = runnable
+                        handler.postDelayed(runnable, 400)
                     }
                     android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> {
+                        startDeleteRunnable?.let {
+                            handler.removeCallbacks(it)
+                            startDeleteRunnable = null
+                        }
                         stopRepeatingDelete()
                     }
                 }
