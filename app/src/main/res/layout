@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1A1A1C"
+    android:padding="4dp">
+
+    <!-- Suggestion Bar -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/suggestion_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp" />
+    </HorizontalScrollView>
+
+    <!-- Number Row -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="2dp">
+
+        <!-- Numbers will be added dynamically or you can hardcode them -->
+    </TableRow>
+
+    <!-- Main Keyboard Rows -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <!-- Row 2: Arabic first row -->
+        <TableRow android:layout_marginVertical="2dp">
+            <include layout="@layout/key" android:id="@+id/key_qaf" />
+            <include layout="@layout/key" android:id="@+id/key_sad" />
+            <include layout="@layout/key" android:id="@+id/key_theh" />
+            <include layout="@layout/key" android:id="@+id/key_feh" />
+            <include layout="@layout/key" android:id="@+id/key_ghayn" />
+            <include layout="@layout/key" android:id="@+id/key_ain" />
+            <include layout="@layout/key" android:id="@+id/key_heh" />
+            <include layout="@layout/key" android:id="@+id/key_khah" />
+            <include layout="@layout/key" android:id="@+id/key_hah" />
+            <include layout="@layout/key" android:id="@+id/key_jeem" />
+            <include layout="@layout/key" android:id="@+id/key_dal" />
+        </TableRow>
+
+        <!-- Row 3 -->
+        <TableRow android:layout_marginVertical="2dp">
+            <include layout="@layout/key" android:id="@+id/key_sheen" />
+            <include layout="@layout/key" android:id="@+id/key_seen" />
+            <include layout="@layout/key" android:id="@+id/key_yeh" />
+            <include layout="@layout/key" android:id="@+id/key_beh" />
+            <include layout="@layout/key" android:id="@+id/key_lam" />
+            <include layout="@layout/key" android:id="@+id/key_alef" />
+            <include layout="@layout/key" android:id="@+id/key_teh" />
+            <include layout="@layout/key" android:id="@+id/key_noon" />
+            <include layout="@layout/key" android:id="@+id/key_meem" />
+            <include layout="@layout/key" android:id="@+id/key_kaf" />
+            <include layout="@layout/key" android:id="@+id/key_tah" />
+        </TableRow>
+
+        <!-- Row 4 -->
+        <TableRow android:layout_marginVertical="2dp">
+            <include layout="@layout/key" android:id="@+id/key_noon_final" />
+            <include layout="@layout/key" android:id="@+id/key_hamza" />
+            <include layout="@layout/key" android:id="@+id/key_waw_hamza" />
+            <include layout="@layout/key" android:id="@+id/key_reh" />
+            <include layout="@layout/key" android:id="@+id/key_yeh_final" />
+            <include layout="@layout/key" android:id="@+id/key_teh_marbuta" />
+            <include layout="@layout/key" android:id="@+id/key_waw" />
+            <include layout="@layout/key" android:id="@+id/key_zain" />
+            <include layout="@layout/key" android:id="@+id/key_dhah" />
+            <include layout="@layout/key" android:id="@+id/key_dal_final" />
+            
+            <!-- Backspace -->
+            <include layout="@layout/key_backspace" />
+        </TableRow>
+
+    </TableLayout>
+
+    <!-- Bottom Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingVertical="4dp">
+
+        <include layout="@layout/key_lang" android:id="@+id/key_language" />
+        <include layout="@layout/key_123" android:id="@+id/key_symbols" />
+        
+        <!-- Space -->
+        <include layout="@layout/key_space" android:id="@+id/key_space" />
+        
+        <include layout="@layout/key_dot" android:id="@+id/key_dot" />
+        <include layout="@layout/key_enter" android:id="@+id/key_enter" />
+    </LinearLayout>
+
+</LinearLayout>
