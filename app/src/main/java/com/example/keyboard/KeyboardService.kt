@@ -411,28 +411,32 @@ class KeyboardService : InputMethodService() {
             if (suggestionButtons.isEmpty()) return
 
             val ic = currentInputConnection ?: return
-            val textBefore = ic.getTextBeforeCursor(50, 0) ?: ""
-            val lastWord = textBefore.split(" ", "\n").lastOrNull()?.toString()?.lowercase(Locale.getDefault()) ?: ""
+            val textBefore = ic.getTextBeforeCursor(100, 0) ?: ""
+            
+            // استخراج آخر كلمة بطريقة أكثر أماناً
+            val lastWord = textBefore.split(Regex("[\\s\\n]+")).lastOrNull()?.trim()?.lowercase(Locale.getDefault()) ?: ""
 
             val fallbackArabic = listOf("أنا", "في", "من", "على", "مش")
             val fallbackEnglish = listOf("I", "the", "to", "and", "you")
             val fallback = if (currentLang == 1) fallbackArabic else fallbackEnglish
 
-            val predicted = if (lastWord.isEmpty()) {
-                emptyList()
-            } else {
-                dictionary.filter { it.startsWith(lastWord) && it != lastWord }
-                    .take(5)
-            }
+            val predicted = if (lastWord.isNotEmpty()) {
+                dictionary.filter { 
+                    it.lowercase(Locale.getDefault()).startsWith(lastWord) && 
+                    it.lowercase(Locale.getDefault()) != lastWord 
+                }.take(5)
+            } else emptyList()
 
             val finalSuggestions = (predicted + fallback)
                 .filter { it.isNotBlank() }
                 .distinct()
                 .take(5)
 
-            for (i in 0 until suggestionButtons.size) {
+            // Safe update
+            for (i in suggestionButtons.indices) {
                 val btn = suggestionButtons.getOrNull(i) ?: continue
                 val word = finalSuggestions.getOrNull(i) ?: ""
+                
                 btn.text = word
                 btn.setOnClickListener {
                     if (word.isNotEmpty()) {
@@ -442,14 +446,16 @@ class KeyboardService : InputMethodService() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("KeyboardService", "updateSuggestions failed safely", e)
+            // No crash - fallback already handled
         }
     }
 
     private fun applySuggestion(suggestion: String) {
         val ic = currentInputConnection ?: return
         val textBeforeCursor = ic.getTextBeforeCursor(50, 0) ?: ""
-        val lastWord = textBeforeCursor.split(" ", "\n").lastOrNull() ?: ""
+        val lastWord = textBeforeCursor.split(Regex("[\\s\\n]+")).lastOrNull()?.trim() ?: ""
+        
         if (lastWord.isNotEmpty()) {
             ic.deleteSurroundingText(lastWord.length, 0)
         }
