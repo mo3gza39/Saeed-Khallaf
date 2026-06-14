@@ -389,44 +389,54 @@ class KeyboardService : InputMethodService() {
     }
 
     private fun updateKeyboardLabels() {
-        for (btn in alphabeticButtons) {
-            val label = btn.tag as? String ?: continue
-            btn.text = if (isShifted) label.uppercase(Locale.getDefault()) else label.lowercase(Locale.getDefault())
+        try {
+            for (btn in alphabeticButtons) {
+                val label = btn.tag as? String ?: continue
+                btn.text = if (isShifted) label.uppercase(Locale.getDefault()) else label.lowercase(Locale.getDefault())
+            }
+            shiftButton?.text = if (isShifted) "↑" else "⇧"
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        shiftButton?.text = if (isShifted) "↑" else "⇧"
     }
 
     private fun updateSuggestions() {
-        val ic = currentInputConnection ?: return
-        val textBefore = ic.getTextBeforeCursor(50, 0) ?: ""
-        val lastWord = textBefore.split(" ", "\n").lastOrNull()?.toString()?.lowercase(Locale.getDefault()) ?: ""
+        try {
+            if (suggestionButtons.isEmpty()) return
 
-        val wordsList = if (lastWord.isEmpty()) {
-            listOf("glass", "ambient", "premium", "typing", "smooth")
-        } else {
-            val filtered = dictionary.filter { it.startsWith(lastWord) && it != lastWord }
-                .take(5)
-            if (filtered.size < 5) {
-                val remain = 5 - filtered.size
-                val fallback = dictionary.filter { !filtered.contains(it) && it != lastWord }
-                    .shuffled()
-                    .take(remain)
-                (filtered + fallback).take(5)
+            val ic = currentInputConnection ?: return
+            val textBefore = ic.getTextBeforeCursor(50, 0) ?: ""
+            val lastWord = textBefore.split(" ", "\n").lastOrNull()?.toString()?.lowercase(Locale.getDefault()) ?: ""
+
+            val fallbackArabic = listOf("أنا", "في", "من", "على", "مش")
+            val fallbackEnglish = listOf("I", "the", "to", "and", "you")
+            val fallback = if (currentLang == 1) fallbackArabic else fallbackEnglish
+
+            val predicted = if (lastWord.isEmpty()) {
+                emptyList()
             } else {
-                filtered
+                dictionary.filter { it.startsWith(lastWord) && it != lastWord }
+                    .take(5)
             }
-        }
 
-        for (i in 0 until 5) {
-            val word = wordsList.getOrElse(i) { "" }
-            val btn = suggestionButtons[i]
-            btn.text = word
-            btn.setOnClickListener {
-                if (word.isNotEmpty()) {
-                    playHaptic(btn)
-                    applySuggestion(word)
+            val finalSuggestions = (predicted + fallback)
+                .filter { it.isNotBlank() }
+                .distinct()
+                .take(5)
+
+            for (i in 0 until suggestionButtons.size) {
+                val btn = suggestionButtons.getOrNull(i) ?: continue
+                val word = finalSuggestions.getOrNull(i) ?: ""
+                btn.text = word
+                btn.setOnClickListener {
+                    if (word.isNotEmpty()) {
+                        playHaptic(btn)
+                        applySuggestion(word)
+                    }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
