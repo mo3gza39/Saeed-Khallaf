@@ -1,10 +1,6 @@
 name: Build Android APK
 
 on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -21,21 +17,33 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
-      - name: Decode Debug Keystore
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create Debug Keystore
         run: |
-          echo "Decoding debug keystore..."
-          base64 -d debug.keystore.base64 > debug.keystore
+          keytool -genkeypair \
+            -v \
+            -keystore debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
 
-      - name: Grant Execute Permission to Gradlew
-        run: chmod +x gradlew
+      - name: Download Gradle 9.3.1
+        run: |
+          curl -L https://services.gradle.org/distributions/gradle-9.3.1-bin.zip -o gradle.zip
+          unzip -q gradle.zip
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradle-9.3.1/bin/gradle assembleDebug --no-daemon
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: glass-keyboard-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
