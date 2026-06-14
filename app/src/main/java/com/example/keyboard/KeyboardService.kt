@@ -116,7 +116,7 @@ class KeyboardService : InputMethodService() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dpToPx(44)
             )
-            setBackgroundColor(0xCC0B0C0E.toInt()) // Sleek translucent suggestions bar
+            setBackgroundColor(0xE60E1013.toInt()) // Frosted glass-like suggestions bar
             setPadding(dpToPx(4), 0, dpToPx(4), 0)
         }
 
@@ -124,13 +124,19 @@ class KeyboardService : InputMethodService() {
         for (i in 0 until 5) {
             val btn = Button(this).apply {
                 textSize = 13.5f
-                setTextColor(0xFFA5C5E8.toInt()) // Sophisticated icy blue accent for predictions
+                setTextColor(0xFF96C0EB.toInt()) // Premium icy blue accent color for word suggestions
                 typeface = Typeface.DEFAULT_BOLD
                 gravity = Gravity.CENTER
                 isAllCaps = false
                 setPadding(dpToPx(4), 0, dpToPx(4), 0)
-                background = GradientDrawable().apply {
-                    setColor(Color.TRANSPARENT)
+                background = StateListDrawable().apply {
+                    addState(intArrayOf(android.R.attr.state_pressed), GradientDrawable().apply {
+                        setColor(0x22FFFFFF)
+                        cornerRadius = dpToPx(6).toFloat()
+                    })
+                    addState(intArrayOf(), GradientDrawable().apply {
+                        setColor(Color.TRANSPARENT)
+                    })
                 }
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f)
             }
@@ -270,8 +276,8 @@ class KeyboardService : InputMethodService() {
                 btn.text = if (isShifted) "↑" else "⇧"
             }
             "BACK" -> btn.text = "⌫"
-            "SPACE" -> btn.text = "Space"
-            "LANG" -> btn.text = if (currentLang == 1) "ENG" else "عرب"
+            "SPACE" -> btn.text = if (currentLang == 1) "مسافة" else "Space"
+            "LANG" -> btn.text = if (currentLang == 1) "ENG" else "عربي"
             else -> {
                 val isSingleLetter = label.length == 1 && label[0].isLetter()
                 if (isSingleLetter) {
@@ -299,14 +305,14 @@ class KeyboardService : InputMethodService() {
             
             // Subtle premium glassmorphic frosted fill color inside dark theme
             val fillColor = when {
-                isAccent -> if (isPressedState) 0x994E5564.toInt() else 0x4D4E5564.toInt()
-                isPressedState -> 0x734E5564.toInt() // Pressed Highlight
-                else -> 0x3B2C303B.toInt() // Standard background
+                isAccent -> if (isPressedState) 0x6650637A.toInt() else 0x3350637A.toInt()
+                isPressedState -> 0x44FFFFFF.toInt() // Transparent white highlight
+                else -> 0x1AFFFFFF.toInt() // Premium translucent glass frosted white
             }
             setColor(fillColor)
             
-            // Ultra elegant, thin translucent glowing border
-            val strokeColor = if (isAccent || isPressedState) 0x60B3CADB.toInt() else 0x24FFFFFF.toInt()
+            // Ultra elegant, clear thin translucent glowing border
+            val strokeColor = if (isAccent || isPressedState) 0x7B96C0EB.toInt() else 0x3DFFFFFF.toInt()
             setStroke(dpToPx(1), strokeColor)
         }
     }
